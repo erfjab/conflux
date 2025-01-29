@@ -15,9 +15,9 @@ class EnvSettings(BaseSettings):
     EXPORT_USERNAME: str = ""
     EXPORT_PASSWORD: str = ""
 
-    def validate_host(self) -> bool:
+    def validate_host(cls, value: str) -> bool:
         """Validate that HOST is a valid URL."""
-        parsed = urlparse(self.EXPORT_HOST)
+        parsed = urlparse(value)
 
         # Check if scheme is http or https
         if parsed.scheme not in ("http", "https"):

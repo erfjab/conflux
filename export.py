@@ -26,7 +26,7 @@ async def main():
 
     # Validate host configuration
     try:
-        env.validate_host()
+        env.validate_host(env.EXPORT_HOST)
         logger.info("Host configuration validated successfully.")
     except ValueError as e:
         logger.error(f"Invalid host configuration: {str(e)}. Exiting...")
