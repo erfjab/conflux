@@ -1,6 +1,16 @@
 import asyncio
+import json
 from app.settings import logger, env
 from app.api import ApiManager
+from datetime import datetime
+
+
+# Custom JSON encoder to handle datetime serialization
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 async def main():
@@ -41,11 +51,53 @@ async def main():
         logger.error(f"Error while retrieving token: {str(e)}")
         exit(1)
 
+    # Export users with pagination
+    offset = 0
+    limit = 50
+    all_users = []
+    logger.info("Starting to retrieve users...")
+
+    while True:
+        try:
+            users = await api.get_users(
+                access=token.access_token, offset=offset, limit=limit
+            )
+            if not users:
+                logger.info("All users retrieved successfully.")
+                break
+
+            all_users.extend(
+                [user.model_dump() for user in users]
+            )
+            logger.info(
+                f"Retrieved {len(users)} users (Offset: {offset}, Limit: {limit})."
+            )
+
+            offset += limit
+        except Exception as e:
+            logger.error(f"Error while retrieving users: {str(e)}")
+            break
+
+    # Save users to a JSON file
+    if all_users:
+        try:
+            with open("export.json", "w", encoding="utf-8") as f:
+                json.dump(
+                    all_users, f, ensure_ascii=False, indent=4, cls=CustomJSONEncoder
+                )
+            logger.info(
+                f"Successfully exported {len(all_users)} users to 'export.json'."
+            )
+        except Exception as e:
+            logger.error(f"Error while saving users to file: {str(e)}")
+    else:
+        logger.warning("No users were retrieved to export.")
+
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.warning("⚠️ Process interrupted by user. Exiting...")
+        logger.warning("Process interrupted by user. Exiting...")
     except Exception as e:
-        logger.critical(f"❌ Unexpected error occurred: {str(e)}")
+        logger.critical(f"Unexpected error occurred: {str(e)}")
