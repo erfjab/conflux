@@ -1,5 +1,5 @@
-from ._env import ExportEnvSettingsFile
+from ._env import EnvSettings
 
-export_env = ExportEnvSettingsFile()
+env = EnvSettings()
 
-__all__ = ["export_env"]
+__all__ = ["env"]
