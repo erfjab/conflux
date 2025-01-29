@@ -6,7 +6,7 @@ def get_user_data_limit(user: UserResponse) -> int | None:
     if user.status in [UserStatus.LIMITED]:
         return 1024
     if not user.data_limit:
-        return None
+        return 0
     if not user.used_traffic and user.data_limit:
         return user.data_limit
     if user.used_traffic and user.data_limit:
