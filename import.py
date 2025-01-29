@@ -2,6 +2,8 @@ import os
 import json
 import asyncio
 
+from collections import defaultdict
+
 from app.settings import logger, env
 from app.api import ApiManager
 
@@ -64,7 +66,8 @@ async def main():
         logger.error(f"Error while retrieving token: {str(e)}")
         exit(1)
 
-    # Check users
+    # Check users and admins
+    admins = defaultdict(list)
     duplicates = []
     total_users = len(users)
     for user in users:
@@ -72,6 +75,9 @@ async def main():
         if not username:
             logger.warning("Skipping user entry with missing 'username'.")
             continue
+
+        admin: dict | None = user.get("admin", {"username": "nonadminusers"})
+        admins[admin["username"]].append(user)
 
         try:
             existing_user = await api.get_user(
@@ -103,6 +109,8 @@ async def main():
     # Show summary
     logger.info(f"Total users: {total_users}")
     logger.info(f"Duplicate users: {duplicate_count} ({duplicate_percentage:.2f}%)")
+    for admin, users in admins.items():
+        logger.info(f"Admin: {admin:<25} → {len(users)} users")
 
     # Ask for confirmation to continue
     while True:
