@@ -66,6 +66,7 @@ async def main():
 
     # Check users
     duplicates = []
+    total_users = len(users)
     for user in users:
         username = user.get("username", None)
         if not username:
@@ -79,15 +80,42 @@ async def main():
             if existing_user:
                 duplicates.append(username)
                 logger.info(f"User '{username}' already exists.")
+            else:
+                logger.info(f"User '{username}' does not exist.")
         except Exception as e:
             logger.error(f"Error checking user '{username}': {str(e)}")
 
-    # Show duplicates
-    if duplicates:
-        logger.info(f"Total duplicate users found: {len(duplicates)}")
-        logger.info("| ".join(duplicates))
-    else:
-        logger.info("Nice, no duplicate users found.")
+    # Calculate duplicate percentage
+    duplicate_count = len(duplicates)
+    duplicate_percentage = (
+        (duplicate_count / total_users) * 100 if total_users > 0 else 0
+    )
+
+    # Show summary
+    logger.info("\n\nSummary:")
+    logger.info(f"Total users: {total_users}")
+    logger.info(f"Duplicate users: {duplicate_count} ({duplicate_percentage:.2f}%)")
+
+    # Ask for confirmation to continue
+    while True:
+        try:
+            ask_continue = input(
+                "Are you sure you want to add non-duplicate users to the panel? (y/n): "
+            ).strip().lower()
+
+            if ask_continue == "y":
+                logger.info("Continuing with the import process...")
+                break
+            elif ask_continue == "n":
+                logger.info("Import process canceled by user. Exiting...")
+                exit(1)
+            else:
+                raise ValueError("Invalid input. Please enter 'y' or 'n'.")
+        except (KeyboardInterrupt, EOFError):
+            logger.warning("Process interrupted by user. Exiting...")
+            exit(1)
+        except Exception as e:
+            logger.warning(str(e))
 
 
 if __name__ == "__main__":
