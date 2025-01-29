@@ -1,8 +1,10 @@
 import asyncio
 import json
+from datetime import datetime
+
 from app.settings import logger, env
 from app.api import ApiManager
-from datetime import datetime
+from app.utils import clear_terminal
 
 
 # Custom JSON encoder to handle datetime serialization
@@ -14,6 +16,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 
 async def main():
+    clear_terminal()
     logger.info("Starting Export Process...")
 
     # Check if environment configuration is valid

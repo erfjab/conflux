@@ -6,9 +6,11 @@ from collections import defaultdict
 
 from app.settings import logger, env
 from app.api import ApiManager
+from app.utils import clear_terminal
 
 
 async def main():
+    clear_terminal()
     logger.info("Starting Import Process...")
 
     # Check if 'export.json' exists
@@ -24,6 +26,7 @@ async def main():
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             users: list[dict] = json.load(f)
+            users = users[:10]
     except Exception as e:
         logger.critical(f"Failed to read 'export.json': {str(e)}")
         exit(1)
@@ -121,6 +124,7 @@ async def main():
 
             if ask_continue == "y":
                 logger.info("Continuing with the import process...")
+                clear_terminal()
                 break
             elif ask_continue == "n":
                 logger.info("Import process canceled by user. Exiting...")
