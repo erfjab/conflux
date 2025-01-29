@@ -9,7 +9,8 @@ async def main():
     logger.info("Starting Import Process...")
 
     # Check if 'export.json' exists
-    if not os.path.exists("export.json"):
+    file_path = os.path.join(os.path.dirname(__file__), "export.json")
+    if not os.path.exists(file_path):
         logger.critical(
             "File 'export.json' not found. Please ensure it exists before running the script."
         )
