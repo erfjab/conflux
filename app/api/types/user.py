@@ -45,4 +45,4 @@ class UserResponse(BaseModel):
     excluded_inbounds: Optional[Dict[str, List[str]]] = None
     admin: Optional[Admin] = None
     created_at: Optional[datetime] = None
-    sub_revoked_at : Optional[datetime] = None
+    sub_revoked_at: Optional[datetime] = None

@@ -1,7 +1,7 @@
 from typing import Optional
 
 from .core import ApiRequest
-from .types import Token, UserResponse
+from .types import Token, UserResponse, Admin
 
 
 class ApiManager(ApiRequest):
@@ -44,5 +44,23 @@ class ApiManager(ApiRequest):
         return await self.get(
             endpoint=f"/api/user/{username}",
             access=access,
+            response_model=UserResponse,
+        )
+
+    async def create_admin(
+        self, username: str, password: str, access: str
+    ) -> Optional[Admin]:
+        return await self.post(
+            endpoint="/api/admin",
+            access=access,
+            data={"username": username, "password": password, "is_sudo": False},
+            response_model=Admin,
+        )
+
+    async def create_user(self, data: dict, access: str) -> Optional[UserResponse]:
+        return await self.post(
+            endpoint="/api/user",
+            access=access,
+            data=data,
             response_model=UserResponse,
         )

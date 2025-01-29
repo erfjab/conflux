@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from app.settings import logger, env
 from app.api import ApiManager
-from app.utils import clear_terminal
+from app.utils import clear_terminal, create_user_data
 
 
 async def main():
@@ -79,9 +79,6 @@ async def main():
             logger.warning("Skipping user entry with missing 'username'.")
             continue
 
-        admin: dict | None = user.get("admin", {"username": "nonadminusers"})
-        admins[admin["username"]].append(user)
-
         try:
             existing_user = await api.get_user(
                 username=username, access=token.access_token
@@ -90,6 +87,8 @@ async def main():
                 duplicates.append(username)
                 logger.info(f"User '{username}' already exists.")
             else:
+                admin: dict = user.get("admin", {"username": "nonadminusers"})
+                admins[admin["username"]].append(user)
                 logger.info(f"User '{username}' does not exist.")
         except Exception as e:
             logger.error(f"Error checking user '{username}': {str(e)}")
@@ -136,6 +135,24 @@ async def main():
             exit(1)
         except Exception as e:
             logger.warning(str(e))
+
+    for admin, users in admins.items():
+        admindata = f"{admin}{admin}"
+        created_admin = await api.create_admin(
+            access=token.access_token, username=admindata, password=admindata
+        )
+        if not created_admin:
+            logger.error(f"Admin `{admin}` is not created!")
+            continue
+
+        for user in users:
+            userdata = create_user_data(user=user)
+            created_user = await api.create_user(
+                data=userdata, access=token.access_token
+            )
+            if not created_user:
+                logger.error(f"User `{user.get("username")}` is not created!")
+                continue
 
 
 if __name__ == "__main__":
