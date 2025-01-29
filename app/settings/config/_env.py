@@ -41,6 +41,6 @@ class EnvSettings(BaseSettings):
 
         return True
 
-    def is_config(self) -> bool:
+    def export_is_config(self) -> bool:
         """Check if all required fields are configured."""
         return all([self.EXPORT_HOST, self.EXPORT_USERNAME, self.EXPORT_PASSWORD])

@@ -17,7 +17,7 @@ async def main():
     logger.info("Starting Export Process...")
 
     # Check if environment configuration is valid
-    if not env.is_config():
+    if not env.export_is_config():
         logger.critical(
             "Environment configuration is missing. Please check the .env file."
         )
