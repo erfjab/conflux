@@ -33,6 +33,6 @@ def create_user_data(
         note=user.note,
         on_hold_expire_duration=user.on_hold_expire_duration if is_onhold else None,
         created_at=user.created_at,
-        sub_revoket_at=user.sub_revoked_at,
+        sub_revoked_at=user.sub_revoked_at,
     ).dict()
     return data
