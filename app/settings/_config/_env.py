@@ -48,3 +48,7 @@ class EnvSettings(BaseSettings):
     def export_is_config(self) -> bool:
         """Check if all required fields are configured."""
         return all([self.EXPORT_HOST, self.EXPORT_USERNAME, self.EXPORT_PASSWORD])
+
+    def import_is_config(self) -> bool:
+        """Check if all required fields are configured."""
+        return all([self.IMPORT_HOST, self.IMPORT_USERNAME, self.IMPORT_PASSWORD])
