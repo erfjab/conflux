@@ -85,6 +85,15 @@ async def main():
         except Exception as e:
             logger.error(f"Error checking user '{username}': {str(e)}")
 
+    if duplicates:
+        try:
+            with open("duplicates.json", "w", encoding="utf-8") as f:
+                json.dump(duplicates, f, indent=4, ensure_ascii=False)
+            logger.info("Duplicate users saved in 'duplicates.json'.")
+        except Exception as e:
+            logger.error(f"Error saving duplicate users: {str(e)}")
+            exit(1)
+
     # Calculate duplicate percentage
     duplicate_count = len(duplicates)
     duplicate_percentage = (
@@ -92,7 +101,6 @@ async def main():
     )
 
     # Show summary
-    logger.info("\n\nSummary:")
     logger.info(f"Total users: {total_users}")
     logger.info(f"Duplicate users: {duplicate_count} ({duplicate_percentage:.2f}%)")
 
@@ -101,7 +109,7 @@ async def main():
         try:
             ask_continue = input(
                 "Are you sure you want to add non-duplicate users to the panel? (y/n): "
-            ).strip().lower()
+            ).lower()
 
             if ask_continue == "y":
                 logger.info("Continuing with the import process...")
