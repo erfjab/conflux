@@ -145,10 +145,15 @@ async def main():
             logger.error(f"Admin `{admin}` is not created!")
             continue
 
+        admintoken = await api.get_token(username=admindata, password=admindata)
+        if not admintoken:
+            logger.error(f"Admin `{admin}` Token is not created!")
+            continue
+
         for user in users:
             userdata = create_user_data(user=user)
             created_user = await api.create_user(
-                data=userdata, access=token.access_token
+                data=userdata, access=admintoken.access_token
             )
             if not created_user:
                 logger.error(f"User `{user.get("username")}` is not created!")
