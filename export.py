@@ -32,12 +32,9 @@ async def main():
         logger.error(f"Invalid host configuration: {str(e)}. Exiting...")
         exit(1)
 
-    # Initialize API Manager
-    api = ApiManager(host=env.EXPORT_HOST)
-    logger.info(f"Connecting to API at {env.EXPORT_HOST}...")
-
-    # Attempt to retrieve token
+    # Initialize API Manager and Attempt to retrieve token
     try:
+        api = ApiManager(host=env.EXPORT_HOST)
         token = await api.get_token(
             username=env.EXPORT_USERNAME, password=env.EXPORT_PASSWORD
         )
@@ -46,7 +43,7 @@ async def main():
                 "Failed to retrieve token. Please check your username/password."
             )
             exit(1)
-        logger.info("Token retrieved successfully.")
+        logger.info("Connecting to API and Token retrieved successfully.")
     except Exception as e:
         logger.error(f"Error while retrieving token: {str(e)}")
         exit(1)
@@ -66,9 +63,7 @@ async def main():
                 logger.info("All users retrieved successfully.")
                 break
 
-            all_users.extend(
-                [user.model_dump() for user in users]
-            )
+            all_users.extend([user.model_dump() for user in users])
             logger.info(
                 f"Retrieved {len(users)} users (Offset: {offset}, Limit: {limit})."
             )
