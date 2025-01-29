@@ -39,3 +39,10 @@ class ApiManager(ApiRequest):
         if not users:
             return False
         return [UserResponse(**user) for user in users["users"]]
+
+    async def get_user(self, username: str, access: str) -> Optional[UserResponse]:
+        return await self.get(
+            endpoint=f"/api/user/{username}",
+            access=access,
+            response_model=UserResponse,
+        )
