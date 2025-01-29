@@ -15,9 +15,13 @@ class EnvSettings(BaseSettings):
     EXPORT_USERNAME: str = ""
     EXPORT_PASSWORD: str = ""
 
-    def validate_host(self) -> bool:
+    IMPORT_HOST: str = ""
+    IMPORT_USERNAME: str = ""
+    IMPORT_PASSWORD: str = ""
+
+    def validate_host(cls, value: str) -> bool:
         """Validate that HOST is a valid URL."""
-        parsed = urlparse(self.EXPORT_HOST)
+        parsed = urlparse(value)
 
         # Check if scheme is http or https
         if parsed.scheme not in ("http", "https"):
@@ -41,6 +45,10 @@ class EnvSettings(BaseSettings):
 
         return True
 
-    def is_config(self) -> bool:
+    def export_is_config(self) -> bool:
         """Check if all required fields are configured."""
         return all([self.EXPORT_HOST, self.EXPORT_USERNAME, self.EXPORT_PASSWORD])
+
+    def import_is_config(self) -> bool:
+        """Check if all required fields are configured."""
+        return all([self.IMPORT_HOST, self.IMPORT_USERNAME, self.IMPORT_PASSWORD])

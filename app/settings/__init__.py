@@ -1,4 +1,4 @@
-from .config import env
-from .log import logger
+from ._config import env
+from ._log import logger
 
 __all__ = ["env", "logger"]

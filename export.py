@@ -1,8 +1,10 @@
 import asyncio
 import json
+from datetime import datetime
+
 from app.settings import logger, env
 from app.api import ApiManager
-from datetime import datetime
+from app.utils import clear_terminal
 
 
 # Custom JSON encoder to handle datetime serialization
@@ -14,10 +16,11 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 
 async def main():
+    clear_terminal()
     logger.info("Starting Export Process...")
 
     # Check if environment configuration is valid
-    if not env.is_config():
+    if not env.export_is_config():
         logger.critical(
             "Environment configuration is missing. Please check the .env file."
         )
@@ -26,7 +29,7 @@ async def main():
 
     # Validate host configuration
     try:
-        env.validate_host()
+        env.validate_host(env.EXPORT_HOST)
         logger.info("Host configuration validated successfully.")
     except ValueError as e:
         logger.error(f"Invalid host configuration: {str(e)}. Exiting...")
