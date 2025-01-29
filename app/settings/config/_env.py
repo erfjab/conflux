@@ -15,6 +15,10 @@ class EnvSettings(BaseSettings):
     EXPORT_USERNAME: str = ""
     EXPORT_PASSWORD: str = ""
 
+    IMPORT_HOST: str = ""
+    IMPORT_USERNAME: str = ""
+    IMPORT_PASSWORD: str = ""
+
     def validate_host(cls, value: str) -> bool:
         """Validate that HOST is a valid URL."""
         parsed = urlparse(value)
