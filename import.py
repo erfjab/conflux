@@ -26,7 +26,6 @@ async def main():
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             users: list[dict] = json.load(f)
-            users = users[:10]
     except Exception as e:
         logger.critical(f"Failed to read 'export.json': {str(e)}")
         exit(1)
