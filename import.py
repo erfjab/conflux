@@ -156,7 +156,7 @@ async def main():
                 data=userdata, access=admintoken.access_token
             )
             if not created_user:
-                logger.error(f"User `{user.get("username")}` is not created!")
+                logger.error(f"User `{user.get('username')}` is not created!")
                 continue
 
 
