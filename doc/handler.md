@@ -117,7 +117,7 @@ def get_subscription_payload(token: str) -> Union[dict, None]:
                 ).decode("utf-8")[:10]
                 if u_signature == u_token_resign:
                     u_username = u_token_dec_str.split(",")[0]
-                    u_created_at = int(u_token_dec_str.split(",")[1]
+                    u_created_at = int(u_token_dec_str.split(",")[1])
                     return {
                         "username": u_username,
                         "created_at": datetime.utcfromtimestamp(u_created_at),
