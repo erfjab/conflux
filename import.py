@@ -26,7 +26,6 @@ async def main():
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             users: list[dict] = json.load(f)
-            users = users[:10]
     except Exception as e:
         logger.critical(f"Failed to read 'export.json': {str(e)}")
         exit(1)
@@ -138,13 +137,9 @@ async def main():
 
     for admin, users in admins.items():
         admindata = f"{admin}{admin}"
-        created_admin = await api.create_admin(
+        await api.create_admin(
             access=token.access_token, username=admindata, password=admindata
         )
-        if not created_admin:
-            logger.error(f"Admin `{admin}` is not created!")
-            continue
-
         admintoken = await api.get_token(username=admindata, password=admindata)
         if not admintoken:
             logger.error(f"Admin `{admin}` Token is not created!")
