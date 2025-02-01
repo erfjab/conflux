@@ -1,3 +1,18 @@
+# Extract JWT Secret Key from Marzban Database
+
+First, extract the `JWT Secret Key` from both the new and old Marzban databases. This key is used to generate JWT tokens.
+
+# Create conflux.py File in Marzban Directory
+
+Create the `conflux.py` file in the Marzban directory:
+
+```bash
+nano /opt/marzban/conflux.py
+```
+
+Then, paste the following code into the file and replace `tokens` with the extracted `JWT Secret Key` values:
+
+```python
 import time
 import jwt
 from base64 import b64decode, b64encode
@@ -10,6 +25,7 @@ from typing import Union
 
 from config import JWT_ACCESS_TOKEN_EXPIRE_MINUTES
 
+SECRET_KEYS = ["secretone", "secrettwo"]
 
 @lru_cache(maxsize=None)
 def get_secret_key():
@@ -17,9 +33,6 @@ def get_secret_key():
 
     with GetDB() as db:
         return get_jwt_secret_key(db)
-
-
-SECRET_KEYS = ["tokenone", "tokentwo"]
 
 
 def create_admin_token(username: str, is_sudo=False) -> str:
@@ -104,7 +117,7 @@ def get_subscription_payload(token: str) -> Union[dict, None]:
                 ).decode("utf-8")[:10]
                 if u_signature == u_token_resign:
                     u_username = u_token_dec_str.split(",")[0]
-                    u_created_at = int(u_token_dec_str.split(",")[1])
+                    u_created_at = int(u_token_dec_str.split(",")[1]
                     return {
                         "username": u_username,
                         "created_at": datetime.utcfromtimestamp(u_created_at),
@@ -113,3 +126,37 @@ def get_subscription_payload(token: str) -> Union[dict, None]:
                     return
     except jwt.exceptions.PyJWTError:
         return
+```
+
+# Add Volume to docker-compose.yml
+
+Edit the `docker-compose.yml` file for Marzban:
+
+```bash
+nano /opt/marzban/docker-compose.yml
+```
+
+Add the following line under the `volumes` section:
+
+```yaml
+volumes:
+    - /opt/marzban/conflux.py:/code/app/utils/jwt.py
+```
+
+Then restart the Marzban service:
+
+```bash
+marzban restart
+```
+
+if you have any problem: [@ErfJabGroup](https://t.me/erfjabgroup)
+
+---
+
+If you want to integrate another Marzban instance into Conflux, simply add its **JWT Secret Key** to the `SECRET_KEYS` list. For example:
+
+```python
+SECRET_KEYS = ["secretone", "secrettow", "secretthree"]
+```
+
+This allows Conflux to handle tokens from multiple Marzban instances seamlessly. Just replace `"secretthree"` with the actual JWT Secret Key of the additional Marzban instance.
