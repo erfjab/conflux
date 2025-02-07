@@ -83,52 +83,38 @@ def create_subscription_token(username: str) -> str:
 
 
 def get_subscription_payload(token: str) -> Union[dict, None]:
-    try:
-        if len(token) < 15:
-            return None
+    for secret in SECRET_KEYS:
+        try:
+            if len(token) < 15:
+                continue
 
-        # Check if it's a JWT token
-        if token.startswith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."):
-            for SECRET_KEY in SECRET_KEYS:
-                try:
-                    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-                    if payload.get("access") == "subscription":
-                        return {
-                            "username": payload["sub"],
-                            "created_at": datetime.utcfromtimestamp(payload["iat"]),
-                        }
-                except jwt.exceptions.PyJWTError:
+            if token.startswith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."):
+                payload = jwt.decode(token, secret, algorithms=["HS256"])
+                if payload.get("access") == "subscription":
+                    return {"username": payload['sub'], "created_at": datetime.utcfromtimestamp(payload['iat'])}
+                else:
                     continue
-            return None
-        else:
-            if len(token) < 10:
-                return None
-            u_token = token[:-10]
-            u_signature = token[-10:]
-            try:
-                u_token_dec = b64decode(
-                    u_token.encode("utf-8") + b"=" * (-len(u_token) % 4),
-                    altchars=b"-_",
-                    validate=True,
-                ).decode("utf-8")
-                u_username, u_created_at_str = u_token_dec.split(",", 1)
-                u_created_at = int(u_created_at_str)
-            except:
-                return None
-
-            for SECRET_KEY in SECRET_KEYS:
-                u_token_resign = b64encode(
-                    sha256((u_token + SECRET_KEY).encode("utf-8")).digest(),
-                    altchars=b"-_",
-                ).decode("utf-8")[:10]
+            else:
+                u_token = token[:-10]
+                u_signature = token[-10:]
+                try:
+                    u_token_dec = b64decode(
+                        (u_token.encode('utf-8') + b'=' * (-len(u_token.encode('utf-8')) % 4)),
+                        altchars=b'-_', validate=True)
+                    u_token_dec_str = u_token_dec.decode('utf-8')
+                except:
+                    continue
+                u_token_resign = b64encode(sha256((u_token+secret).encode('utf-8')
+                                                ).digest(), altchars=b'-_').decode('utf-8')[:10]
                 if u_signature == u_token_resign:
-                    return {
-                        "username": u_username,
-                        "created_at": datetime.utcfromtimestamp(u_created_at),
-                    }
-            return None
-    except:
-        return None
+                    u_username = u_token_dec_str.split(',')[0]
+                    u_created_at = int(u_token_dec_str.split(',')[1])
+                    return {"username": u_username, "created_at": datetime.utcfromtimestamp(u_created_at)}
+                else:
+                    continue
+        except jwt.exceptions.PyJWTError:
+            continue
+    return
 ```
 
 # Add Volume to docker-compose.yml
