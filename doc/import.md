@@ -56,6 +56,7 @@ Add the following line under the `volumes` section:
 volumes:
     - /var/lib/marzban:/var/lib/marzban
     - /root/conflux/docker/import/usermodel.py:/code/app/models/user.py
+    - /root/conflux/docker/import/crud.py:/code/app/db/crud.py
 ```
 
 Then restart the Marzban service:
