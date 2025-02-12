@@ -127,6 +127,7 @@ class UserCreate(User):
     username: str
     status: UserStatusCreate = None
     sub_revoked_at: Optional[datetime] = None
+    created_at: Optional[datetime] = datetime.utcnow()
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
