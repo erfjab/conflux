@@ -29,6 +29,14 @@ pip3 install uv
 
 Add the `export.json` file (from the previous step) to the Conflux folder.
 
+# Return to the Conflux Folder
+
+Go back to the Conflux folder:
+
+```bash
+cd /root/conflux
+```
+
 # Copy and Edit the .env File
 
 Copy the `.env.example` file to `.env` and fill in the details for `import host`, `import username`, and `import password`:
@@ -54,9 +62,9 @@ Add the following line under the `volumes` section:
 
 ```yaml
 volumes:
-    - /var/lib/marzban:/var/lib/marzban
-    - /root/conflux/docker/import/usermodel.py:/code/app/models/user.py
-    - /root/conflux/docker/import/crud.py:/code/app/db/crud.py
+  - /var/lib/marzban:/var/lib/marzban
+  - /root/conflux/docker/import/usermodel.py:/code/app/models/user.py
+  - /root/conflux/docker/import/crud.py:/code/app/db/crud.py
 ```
 
 Then restart the Marzban service:
@@ -81,7 +89,7 @@ uv run import.py
 
 1. First, duplicate users are checked, and the number of duplicates is displayed.
 2. Then, a list of admin and non-duplicate admin users for import is shown.
-    After the process is complete, a file named `duplicates.json` will be created. Make sure to back up this file.
+   After the process is complete, a file named `duplicates.json` will be created. Make sure to back up this file.
 3. If you enter `y`, all non-duplicate users will be added to your Marzban.
 
 # Final Step
