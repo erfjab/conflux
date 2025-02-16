@@ -145,7 +145,7 @@ if you have any problem: [@ErfJabGroup](https://t.me/erfjabgroup)
 If you want to integrate another Marzban instance into Conflux, simply add its **JWT Secret Key** to the `SECRET_KEYS` list. For example:
 
 ```python
-SECRET_KEYS = ["secretone", "secrettow", "secretthree"]
+SECRET_KEYS = ["secretone", "secrettwo", "secretthree"]
 ```
 
 This allows Conflux to handle tokens from multiple Marzban instances seamlessly. Just replace `"secretthree"` with the actual JWT Secret Key of the additional Marzban instance.
