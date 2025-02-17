@@ -1,5 +1,5 @@
 from app.api.types import UserStatus, UserResponse
-from app.models.user import UserCreate
+from app.models.user import UserCreate, UserModify
 
 
 def get_user_data_limit(user: UserResponse) -> int | None:
@@ -32,6 +32,17 @@ def create_user_data(
         expire=None if is_onhold else user.expire,
         note=user.note,
         on_hold_expire_duration=user.on_hold_expire_duration if is_onhold else None,
+        created_at=user.created_at,
+        sub_revoked_at=user.sub_revoked_at,
+    ).dict()
+    return data
+
+def modify_user_data(
+        user: dict
+) -> dict:
+    user: UserResponse = UserResponse(**user)
+    data = UserModify(
+        username=user.username,
         created_at=user.created_at,
         sub_revoked_at=user.sub_revoked_at,
     ).dict()

@@ -64,3 +64,11 @@ class ApiManager(ApiRequest):
             data=data,
             response_model=UserResponse,
         )
+
+    async def modify_user(self, data: dict, username: str,access: str) -> Optional[UserResponse]:
+        return await self.put(
+            endpoint=f"/api/user/{username}",
+            access=access,
+            data=data,
+            response_model=UserResponse,
+        )

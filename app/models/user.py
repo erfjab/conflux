@@ -15,3 +15,8 @@ class UserCreate(BaseModel):
     on_hold_expire_duration: int | None = None
     created_at: datetime | None = None
     sub_revoked_at: datetime | None = None
+
+class UserModify(BaseModel):
+    username: str
+    created_at: datetime | None = None
+    sub_revoked_at: datetime | None = None

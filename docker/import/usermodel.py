@@ -215,6 +215,8 @@ class UserCreate(User):
 class UserModify(User):
     status: UserStatusModify = None
     data_limit_reset_strategy: UserDataLimitResetStrategy = None
+    sub_revoked_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
     model_config = ConfigDict(
         json_schema_extra={
             "example": {

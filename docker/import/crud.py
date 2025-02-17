@@ -516,6 +516,10 @@ def update_user(db: Session, dbuser: User, modify: UserModify) -> User:
 
     if modify.on_hold_expire_duration is not None:
         dbuser.on_hold_expire_duration = modify.on_hold_expire_duration
+    if modify.sub_revoked_at is not None:
+        dbuser.sub_revoked_at = modify.sub_revoked_at
+    if modify.created_at is not None:
+        dbuser.created_at = modify.created_at
 
     if modify.next_plan is not None:
         dbuser.next_plan = NextPlan(
